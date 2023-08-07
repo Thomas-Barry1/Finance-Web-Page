@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Financial Calculator</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Financial Calculator</h1>
+      <p>Would you like to: <br>
+        <ol>
+          <li>Add money to the account?</li>
+          <li>See total available spending money?</li>
+          <li>See savings money</li>
+          <li>Spend money</li>
+        </ol>
+      </p>
+      <form id="calculatorForm">
+        <div class="form-group">
+          <label for="selection">Selection:</label>
+          <input type="number" id="selection" name="selection" min = "0" max="4" required />
+        </div>
+        <div class="form-group">
+          <label for="amount">Amount:</label>
+          <input type="number" id="amount" name="amount" min = "0" step=".01" required />
+        </div>
+        <div class="form-group">
+          <label for="savingsPercent">Percent Savings:</label>
+          <input type="number" id="savingsPercent" name="savingsPercent" min = "0" step=".01" required />
+        </div>
+        <div class="form-group">
+          <button type="submit">Calculate</button>
+        </div>
+        <div id="result"></div>
+      </form>
+    </div>
+
+    <script src="/static/script.js"></script>
+  </body>
+</html>
