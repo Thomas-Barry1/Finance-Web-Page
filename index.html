@@ -11,22 +11,23 @@
         <ol>
           <li>Add money to the account?</li>
           <li>See total available spending money?</li>
-          <li>See savings money</li>
-          <li>Spend money</li>
+          <li>See savings money?</li>
+          <li>Spend money?</li>
+          <li>Clear All Values?</li>
         </ol>
       </p>
       <form id="calculatorForm">
         <div class="form-group">
-          <label for="selection">Selection:</label>
-          <input type="number" id="selection" name="selection" min = "0" max="4" required />
+          <label for="selection">Select Option:</label>
+          <input type="number" id="selection" name="selection" min = "1" max="5" required />
         </div>
         <div class="form-group">
-          <label for="amount">Amount:</label>
+          <label for="amount">Amount To Add or Subtract:</label>
           <input type="number" id="amount" name="amount" min = "0" step=".01" required />
         </div>
         <div class="form-group">
-          <label for="savingsPercent">Percent Savings:</label>
-          <input type="number" id="savingsPercent" name="savingsPercent" min = "0" step=".01" required />
+          <label for="savingsPercent">Percent Towards Savings:</label>
+          <input type="number" id="savingsPercent" name="savingsPercent" min = "0" step=".01" max="1" required />
         </div>
         <div class="form-group">
           <button type="submit">Calculate</button>
@@ -38,3 +39,4 @@
     <script src="/static/script.js"></script>
   </body>
 </html>
+
