@@ -42,6 +42,9 @@ app.post("/submit", (req, res) => {
       spendings -= amount;
       responseData = { message: "Subtracted Money" };
       break;
+    case 5: //Reset all values
+      spendings = 0;
+      savings = 0;
     default:
   }
 
