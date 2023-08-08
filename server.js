@@ -45,11 +45,9 @@ app.post("/submit", (req, res) => {
     case 5: //Reset all values
       spendings = 0;
       savings = 0;
+      responseData = { message: "Savings and Spending Cleared" };
     default:
   }
-
-  // Simulate some processing
-  //   const responseData = { message: "Data received successfully" };
   res.json(responseData);
 });
 
