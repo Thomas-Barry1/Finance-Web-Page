@@ -1,3 +1,6 @@
+var spendings = 0;
+var savings = 0;
+
 document
   .getElementById("calculatorForm")
   .addEventListener("submit", function (e) {
@@ -5,10 +8,39 @@ document
     e.preventDefault();
 
     // Get form values
-    var selection = document.getElementById("selection").value;
-    var amount = document.getElementById("amount").value;
-    var savingsPercent = document.getElementById("savingsPercent").value;
+    var selection = Number(document.getElementById("selection").value);
+    var amount = parseFloat(document.getElementById("amount").value);
+    var savingsPercent = parseFloat(
+      document.getElementById("savingsPercent").value
+    );
 
+    var responseData = { message: "Data received successfully" };
+    switch (selection) {
+      case 1:
+        spendings += amount * (1 - savingsPercent);
+        savings += amount * savingsPercent;
+        responseData = { message: "Added Money" };
+        break;
+      case 2:
+        responseData = { message: "" + spendings };
+        break;
+      case 3:
+        responseData = { message: "" + savings };
+        break;
+      case 4:
+        spendings -= amount;
+        responseData = { message: "Subtracted Money" };
+        break;
+      case 5: //Reset all values
+        spendings = 0;
+        savings = 0;
+        responseData = { message: "Savings and Spending Cleared" };
+      default:
+    }
+
+    document.getElementById("result").innerText = responseData.message;
+
+    /* TODO
     // Create request body
     var requestBody = {
       selection: selection,
@@ -32,4 +64,5 @@ document
       .catch((error) => {
         console.error("Error:", error);
       });
+      */
   });
