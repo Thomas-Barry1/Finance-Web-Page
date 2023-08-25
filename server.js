@@ -15,6 +15,16 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/index.html");
 });
 
+// Serve the Tool Page
+app.get("/toolPg", (req, res) => {
+  res.sendFile(__dirname + "/toolPg.html");
+});
+
+// Serve the About Page
+app.get("/about", (req, res) => {
+  res.sendFile(__dirname + "/about.html");
+});
+
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 

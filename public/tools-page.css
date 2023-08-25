@@ -1,0 +1,39 @@
+/* tools-page.css */
+
+/* Add any additional styles for the tools page here */
+.container {
+    padding: 40px;
+}
+
+.tool {
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.tool h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.tool p {
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.tool a {
+    display: inline-block;
+    padding: 8px 20px;
+    background-color: #007bff;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.tool a:hover {
+    background-color: #0056b3;
+}
