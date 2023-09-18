@@ -1,11 +1,32 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+// const mysql = require("mysql");
 
 const app = express();
 const PORT = 3000;
 
+//Initialize variables to 0
 var spendings = 0;
 var savings = 0;
+
+// //Create connnection to database
+// const db = mysql.createConnection({
+//   host: "localhost",
+
+//   user: "root",
+
+//   password: "simplilearn",
+
+//   database: "nodemysql",
+// });
+
+// // Connect to MySQL
+// db.connect((err) => {
+//   if (err) {
+//     throw err;
+//   }
+//   console.log("MySql Connected");
+// });
 
 // Make static available to public
 app.use("/static", express.static("public"));
@@ -23,6 +44,11 @@ app.get("/toolPg", (req, res) => {
 // Serve the About Page
 app.get("/about", (req, res) => {
   res.sendFile(__dirname + "/about.html");
+});
+
+// Serve the Savings Tool Planner Page
+app.get("/savings-goal-planner", (req, res) => {
+  res.sendFile(__dirname + "/savingsProgress.html");
 });
 
 app.use(express.json()); // to support JSON-encoded bodies

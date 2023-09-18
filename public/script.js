@@ -17,8 +17,8 @@ document
     var responseData = { message: "Data received successfully" };
     switch (selection) {
       case 1:
-        spendings += amount * (1 - savingsPercent);
-        savings += amount * savingsPercent;
+        spendings += amount * (1 - savingsPercent / 100);
+        savings += (amount * savingsPercent) / 100;
         responseData = { message: "Added Money" };
         break;
       case 2:
@@ -38,7 +38,8 @@ document
       default:
     }
 
-    document.getElementById("result").innerText = responseData.message;
+    document.getElementById("result").innerText =
+      "Result: " + responseData.message;
 
     /* TODO
     // Create request body
