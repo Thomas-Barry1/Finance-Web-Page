@@ -1,6 +1,8 @@
-const express = require("express");
-const bodyParser = require("body-parser");
-// const mysql = require("mysql");
+import express from "express";
+import session from "express-session";
+import path from "path";
+import bodyParser from "body-parser";
+import { addUser, findUser } from "./db_connection.js";
 
 const app = express();
 const PORT = 3000;
@@ -39,6 +41,11 @@ app.get("/", (req, res) => {
 // Serve the Tool Page
 app.get("/toolPg", (req, res) => {
   res.sendFile(__dirname + "/toolPg.html");
+});
+
+// Serve the Login Page
+app.get("/login", (req, res) => {
+  res.sendFile(__dirname + "/login.html");
 });
 
 // Serve the About Page
