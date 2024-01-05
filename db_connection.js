@@ -26,7 +26,7 @@ con.connect(function (err) {
   if (err) throw err;
   console.log("Connected!");
   var sql =
-    "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), password VARCHAR(255))";
+    "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), password VARCHAR(255), spendings INT, savings INT)";
   con.query(sql, function (err, result) {
     if (err) throw err;
     console.log("Table created");
@@ -36,14 +36,12 @@ con.connect(function (err) {
 export function addUser(username, password) {
   con.connect(function (err) {
     if (err) throw err;
+    if (findUser(username, password) != undefined) {
+      console.log("User already exists");
+    }
     console.log("Connected!");
-    var sql =
-      "INSERT INTO users (username, password) VALUES (" +
-      username +
-      ", " +
-      password +
-      ")";
-    con.query(sql, function (err, result) {
+    var sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+    con.query(sql, [username, password], function (err, result) {
       if (err) throw err;
       console.log("1 record inserted, ID: " + result.insertId);
     });
@@ -54,13 +52,12 @@ export function findUser(username, password) {
   con.connect(function (err) {
     if (err) throw err;
     con.query(
-      "SELECT * FROM customers WHERE username = " +
-        username +
-        " & password = " +
-        password,
-      function (err, result) {
+      "SELECT * FROM accounts WHERE username = ? AND password = ?",
+      [username, password],
+      function (error, result, fields) {
         if (err) throw err;
         console.log(result);
+        return result;
       }
     );
   });

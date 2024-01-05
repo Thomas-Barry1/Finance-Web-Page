@@ -4,6 +4,10 @@ import path from "path";
 import bodyParser from "body-parser";
 import { addUser, findUser } from "./db_connection.js";
 
+// For ES6 modules
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+
 const app = express();
 const PORT = 3000;
 
@@ -11,51 +15,42 @@ const PORT = 3000;
 var spendings = 0;
 var savings = 0;
 
-// //Create connnection to database
-// const db = mysql.createConnection({
-//   host: "localhost",
-
-//   user: "root",
-
-//   password: "simplilearn",
-
-//   database: "nodemysql",
-// });
-
-// // Connect to MySQL
-// db.connect((err) => {
-//   if (err) {
-//     throw err;
-//   }
-//   console.log("MySql Connected");
-// });
+//Initialize __dirname variable since modules don't have it
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Make static available to public
 app.use("/static", express.static("public"));
 
 // Serve the HTML file
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(path.join(__dirname, "/html/index.html"));
 });
 
 // Serve the Tool Page
 app.get("/toolPg", (req, res) => {
-  res.sendFile(__dirname + "/toolPg.html");
+  res.sendFile(path.join(__dirname, "/html/toolPg.html"));
 });
 
 // Serve the Login Page
 app.get("/login", (req, res) => {
-  res.sendFile(__dirname + "/login.html");
+  // addUser("John", "Doe");
+  res.sendFile(path.join(__dirname, "/html/login.html"));
+});
+
+// Serve the Create Login Page
+app.get("/newUsr", (req, res) => {
+  res.sendFile(path.join(__dirname, "/html/newUsr.html"));
 });
 
 // Serve the About Page
 app.get("/about", (req, res) => {
-  res.sendFile(__dirname + "/about.html");
+  res.sendFile(path.join(__dirname, "/html/about.html"));
 });
 
 // Serve the Savings Tool Planner Page
 app.get("/savings-goal-planner", (req, res) => {
-  res.sendFile(__dirname + "/savingsProgress.html");
+  res.sendFile(path.join(__dirname, "/html/savingsProgress.html"));
 });
 
 app.use(express.json()); // to support JSON-encoded bodies
@@ -92,6 +87,58 @@ app.post("/submit", (req, res) => {
     default:
   }
   res.json(responseData);
+});
+
+// http://localhost:3000/auth Log user in
+app.post("/auth", function (request, response) {
+  // Capture the input fields
+  let username = request.body.username;
+  let password = request.body.password;
+  // Ensure the input fields exists and are not empty
+  if (username && password) {
+    // Execute SQL query that'll select the account from the database based on the specified username and password
+    var results = findUser(username, password);
+    // If the account exists
+    if (results.length > 0) {
+      // Authenticate the user
+      spendings = results.spendings;
+      savings = results.savings;
+      // Redirect to home page
+      response.redirect("/");
+    } else {
+      response.send("Incorrect Username and/or Password!");
+    }
+    response.end();
+  } else {
+    response.send("Please enter Username and Password!");
+    response.end();
+  }
+});
+
+// http://localhost:3000/auth Log user in
+app.post("/register", function (request, response) {
+  // Capture the input fields
+  let username = request.body.username;
+  let password = request.body.password;
+  // Ensure the input fields exists and are not empty
+  if (username && password) {
+    // Execute SQL query that'll select the account from the database based on the specified username and password
+    var results = findUser(username, password);
+    // If the account exists
+    if (results.length > 0) {
+      // Authenticate the user
+      spendings = results.spendings;
+      savings = results.savings;
+      // Redirect to home page
+      response.redirect("/");
+    } else {
+      response.send("Incorrect Username and/or Password!");
+    }
+    response.end();
+  } else {
+    response.send("Please enter Username and Password!");
+    response.end();
+  }
 });
 
 // Start the server
