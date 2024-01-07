@@ -41,14 +41,21 @@ var sql =
 const result = await pool.query(sql);
 console.log("Table created");
 
-export async function addUser(username, password) {
+export async function addUser(username, password, spendings, savings) {
   if (await findUser(username, password)) {
     console.log("User already exists");
     return undefined;
   }
-  var sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-  const [rows] = await pool.query(sql, [username, password]);
-  console.log("1 record inserted, ID: " + rows);
+  var sql =
+    "INSERT INTO users (username, password, spendings, savings) VALUES (?, ?, ?, ?)";
+  const [rows] = await pool.query(sql, [
+    username,
+    password,
+    spendings,
+    savings,
+  ]);
+  console.log("1 record inserted, ID: ");
+  console.log(rows);
   return rows;
 }
 

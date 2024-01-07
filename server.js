@@ -34,7 +34,7 @@ app.get("/toolPg", (req, res) => {
 
 // Serve the Login Page
 app.get("/login", (req, res) => {
-  addUser("John", "Doe");
+  addUser("John", "Doe", 20, 20);
   res.sendFile(path.join(__dirname, "/html/login.html"));
 });
 
@@ -100,13 +100,16 @@ app.post("/auth", async function (request, response) {
     try {
       // Execute SQL query that'll select the account from the database based on the specified username and password
       var results = await findUser(username, password);
-      console.log("Results in server auth post: " + results);
+      console.log("Results in server auth post: ");
+      console.log(results);
 
       // If the account exists
       if (results) {
         // Authenticate the user
         spendings = results.spendings;
         savings = results.savings;
+        console.log("Current spendings: " + spendings);
+        console.log("Current savings: " + savings);
         // Redirect to home page
         response.redirect("/");
       } else {
