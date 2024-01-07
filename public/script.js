@@ -1,6 +1,7 @@
 var spendings = 0;
 var savings = 0;
 
+//TODO: Switch to get spendings and savings from server
 document
   .getElementById("calculatorForm")
   .addEventListener("submit", function (e) {
