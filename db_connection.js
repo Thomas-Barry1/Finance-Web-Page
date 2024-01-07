@@ -1,63 +1,89 @@
 import mysql from "mysql2";
 
-var con = mysql.createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  password: "",
-});
+// var con = mysql.createConnection({
+//   host: "127.0.0.1",
+//   user: "root",
+//   password: "",
+// });
+var pool = mysql
+  .createPool({
+    host: "127.0.0.1",
+    user: "root",
+    password: "",
+  })
+  .promise();
 
-con.connect(function (err) {
-  if (err) throw err;
-  console.log("Connected!");
-  con.query("CREATE DATABASE IF NOT EXISTS mydb", function (err, result) {
-    if (err) throw err;
-    console.log("Database created");
-  });
-});
+//Create database
+const [rows] = await pool.query("CREATE DATABASE IF NOT EXISTS mydb");
+console.log("Database created");
+console.log(rows);
 
-con = mysql.createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  password: "",
-  database: "mydb",
-});
+// con.connect(function (err) {
+//   if (err) throw err;
+//   console.log("Connected!");
+//   con.query("CREATE DATABASE IF NOT EXISTS mydb", function (err, result) {
+//     if (err) throw err;
+//     console.log("Database created");
+//   });
+// });
 
-con.connect(function (err) {
-  if (err) throw err;
-  console.log("Connected!");
-  var sql =
-    "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), password VARCHAR(255), spendings INT, savings INT)";
-  con.query(sql, function (err, result) {
-    if (err) throw err;
-    console.log("Table created");
-  });
-});
+pool = mysql
+  .createPool({
+    host: "127.0.0.1",
+    user: "root",
+    password: "",
+    database: "myDb",
+  })
+  .promise();
 
-export function addUser(username, password) {
-  con.connect(function (err) {
-    if (err) throw err;
-    if (findUser(username, password) != undefined) {
-      console.log("User already exists");
-    }
-    console.log("Connected!");
-    var sql = "INSERT INTO users (username, password) VALUES (?, ?)";
-    con.query(sql, [username, password], function (err, result) {
-      if (err) throw err;
-      console.log("1 record inserted, ID: " + result.insertId);
-    });
-  });
+var sql =
+  "CREATE TABLE IF NOT EXISTS users (id INT AUTO_INCREMENT PRIMARY KEY, username VARCHAR(255), password VARCHAR(255), spendings INT, savings INT)";
+const result = await pool.query(sql);
+console.log("Table created");
+
+export async function addUser(username, password) {
+  if (await findUser(username, password)) {
+    console.log("User already exists");
+    return undefined;
+  }
+  var sql = "INSERT INTO users (username, password) VALUES (?, ?)";
+  const [rows] = await pool.query(sql, [username, password]);
+  console.log("1 record inserted, ID: " + rows);
+  return rows;
 }
 
-export function findUser(username, password) {
+export async function findUser(username, password) {
+  var sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+  const [rows] = await pool.query(sql, [username, password]);
+  console.log("Find user: ");
+  console.log(rows[0]);
+  return rows[0];
+  //   con.connect(function (err) {
+  //     if (err) throw err;
+  //     con.query(
+  //       "SELECT * FROM users WHERE username = ? AND password = ?",
+  //       [username, password],
+  //       function (error, result, fields) {
+  //         if (err) throw err;
+  //         console.log("Find user: ");
+  //         console.log(result);
+  //         return result;
+  //       }
+  //     );
+  //   });
+}
+
+export async function updateUserValues(username, password, spendings, savings) {
   con.connect(function (err) {
     if (err) throw err;
+    var sql =
+      "UPDATE users SET spendings = ? AND savings = ? WHERE username = ? AND password = ?";
     con.query(
-      "SELECT * FROM accounts WHERE username = ? AND password = ?",
-      [username, password],
-      function (error, result, fields) {
+      sql,
+      [username, password, spendings, savings],
+      function (err, result) {
         if (err) throw err;
-        console.log(result);
-        return result;
+        console.log(result.affectedRows + " record(s) updated");
       }
     );
   });

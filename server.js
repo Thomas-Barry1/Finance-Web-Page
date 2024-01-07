@@ -34,7 +34,7 @@ app.get("/toolPg", (req, res) => {
 
 // Serve the Login Page
 app.get("/login", (req, res) => {
-  // addUser("John", "Doe");
+  addUser("John", "Doe");
   res.sendFile(path.join(__dirname, "/html/login.html"));
 });
 
@@ -90,25 +90,34 @@ app.post("/submit", (req, res) => {
 });
 
 // http://localhost:3000/auth Log user in
-app.post("/auth", function (request, response) {
+app.post("/auth", async function (request, response) {
   // Capture the input fields
   let username = request.body.username;
   let password = request.body.password;
-  // Ensure the input fields exists and are not empty
+
+  // Ensure the input fields exist and are not empty
   if (username && password) {
-    // Execute SQL query that'll select the account from the database based on the specified username and password
-    var results = findUser(username, password);
-    // If the account exists
-    if (results.length > 0) {
-      // Authenticate the user
-      spendings = results.spendings;
-      savings = results.savings;
-      // Redirect to home page
-      response.redirect("/");
-    } else {
-      response.send("Incorrect Username and/or Password!");
+    try {
+      // Execute SQL query that'll select the account from the database based on the specified username and password
+      var results = await findUser(username, password);
+      console.log("Results in server auth post: " + results);
+
+      // If the account exists
+      if (results) {
+        // Authenticate the user
+        spendings = results.spendings;
+        savings = results.savings;
+        // Redirect to home page
+        response.redirect("/");
+      } else {
+        response.send("Incorrect Username and/or Password!");
+      }
+    } catch (error) {
+      console.error("Error while querying the database:", error);
+      response.send("Error occurred during authentication.");
+    } finally {
+      // response.end();
     }
-    response.end();
   } else {
     response.send("Please enter Username and Password!");
     response.end();
@@ -116,19 +125,19 @@ app.post("/auth", function (request, response) {
 });
 
 // http://localhost:3000/auth Log user in
-app.post("/register", function (request, response) {
+app.post("/register", async function (request, response) {
   // Capture the input fields
   let username = request.body.username;
   let password = request.body.password;
   // Ensure the input fields exists and are not empty
   if (username && password) {
     // Execute SQL query that'll select the account from the database based on the specified username and password
-    var results = findUser(username, password);
+    var results = await addUser(username, password);
     // If the account exists
-    if (results.length > 0) {
+    if (results) {
       // Authenticate the user
-      spendings = results.spendings;
-      savings = results.savings;
+      spendings = 0;
+      savings = 0;
       // Redirect to home page
       response.redirect("/");
     } else {
