@@ -53,6 +53,12 @@ app.get("/savings-goal-planner", (req, res) => {
   res.sendFile(path.join(__dirname, "/html/savingsProgress.html"));
 });
 
+app.get("/getData", (req, res) => {
+  // Simulating data retrieval from a database or another source
+
+  res.json({ spendings, savings });
+});
+
 app.use(express.json()); // to support JSON-encoded bodies
 app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodies
 
