@@ -11,6 +11,7 @@
   <body>
     <nav class="menu">
       <ul>
+        <li class="invisible" ><a id="loginName" href=""></a></li>
         <li><a href="/">Home</a></li>
         <li><a href="/toolPg">Other Financial Tools</a></li>
         <li><a href="/about">About</a></li> <!--  Could have it be /about -->
@@ -42,9 +43,11 @@
         </div>
         <div class="form-group">
           <button type="submit">Calculate</button>
+          <br>
         </div>
         <div id="result"></div>
       </form>
+      <button class="invisible" id="saveBtn" type="button">Click To Save Information</button>
       <a href="/login">Login here to save or reuse your information</a>
     </div>
     <div class="p-container">

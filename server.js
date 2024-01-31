@@ -2,7 +2,7 @@ import express from "express";
 import session from "express-session";
 import path from "path";
 import bodyParser from "body-parser";
-import { addUser, findUser } from "./db_connection.js";
+import { addUser, findUser, updateUserValues } from "./db_connection.js";
 
 // For ES6 modules
 import { fileURLToPath } from "url";
@@ -11,7 +11,17 @@ import { dirname } from "path";
 const app = express();
 const PORT = 3000;
 
-//Initialize variables to 0
+//Set up session
+app.use(express.json());
+app.use(
+  session({
+    secret: "your-secret-key", // Replace with a strong and secure key
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+//Initialize variables to 0 or nothing
 var spendings = 0;
 var savings = 0;
 
@@ -34,7 +44,7 @@ app.get("/toolPg", (req, res) => {
 
 // Serve the Login Page
 app.get("/login", (req, res) => {
-  addUser("John", "Doe", 20, 20);
+  // addUser("John", "Doe", 20, 20);
   res.sendFile(path.join(__dirname, "/html/login.html"));
 });
 
@@ -56,7 +66,7 @@ app.get("/savings-goal-planner", (req, res) => {
 app.get("/getData", (req, res) => {
   // Simulating data retrieval from a database or another source
 
-  res.json({ spendings, savings });
+  res.json({ spendings, savings, username: req.session.user.username });
 });
 
 app.use(express.json()); // to support JSON-encoded bodies
@@ -64,59 +74,51 @@ app.use(express.urlencoded({ extended: true })); // to support URL-encoded bodie
 
 // Handle POST request
 app.post("/submit", (req, res) => {
-  var selection = Number(req.body.selection),
-    amount = parseFloat(req.body.amount),
-    savingsPercent = parseFloat(req.body.savingsPercent);
-  console.log("Received data:", selection, amount, savingsPercent);
+  var spendings = parseFloat(req.body.spendings),
+    savings = parseFloat(req.body.savings);
+  console.log("Received data:", spendings, savings);
 
-  var responseData = { message: "Data received successfully" };
-  switch (selection) {
-    case 1:
-      spendings += amount * (1 - savingsPercent);
-      savings += amount * savingsPercent;
-      responseData = { message: "Added Money" };
-      break;
-    case 2:
-      responseData = { message: "" + spendings };
-      break;
-    case 3:
-      responseData = { message: "" + savings };
-      break;
-    case 4:
-      spendings -= amount;
-      responseData = { message: "Subtracted Money" };
-      break;
-    case 5: //Reset all values
-      spendings = 0;
-      savings = 0;
-      responseData = { message: "Savings and Spending Cleared" };
-    default:
+  global.spendings = spendings;
+  global.savings = savings;
+
+  var username = req.session.user.username;
+  var password = req.session.user.password;
+  console.log("Username:" + req.session.user.username);
+  console.log("Password:" + req.session.user.password);
+  console.log("Spendings" + spendings);
+  console.log("Savings:" + savings);
+  if (username && password && spendings && savings) {
+    console.log("Call updateVal function");
+    updateUserValues(username, password, spendings, savings);
   }
+  var responseData = { message: "Data received successfully" };
+
   res.json(responseData);
 });
 
 // http://localhost:3000/auth Log user in
-app.post("/auth", async function (request, response) {
-  // Capture the input fields
-  let username = request.body.username;
+app.post("/auth", async (request, response) => {
+  let user = request.body.username;
   let password = request.body.password;
 
-  // Ensure the input fields exist and are not empty
-  if (username && password) {
+  if (user && password) {
     try {
-      // Execute SQL query that'll select the account from the database based on the specified username and password
-      var results = await findUser(username, password);
-      console.log("Results in server auth post: ");
-      console.log(results);
+      var results = await findUser(user, password);
 
-      // If the account exists
       if (results) {
-        // Authenticate the user
-        spendings = results.spendings;
-        savings = results.savings;
-        console.log("Current spendings: " + spendings);
-        console.log("Current savings: " + savings);
-        // Redirect to home page
+        // Store user information in the session
+        request.session.user = {
+          username: request.body.username,
+          password: request.body.password,
+          spendings: results.spendings,
+          savings: results.savings,
+        };
+
+        console.log(
+          "User information stored in session:",
+          request.session.user
+        );
+
         response.redirect("/");
       } else {
         response.send("Incorrect Username and/or Password!");
@@ -124,16 +126,13 @@ app.post("/auth", async function (request, response) {
     } catch (error) {
       console.error("Error while querying the database:", error);
       response.send("Error occurred during authentication.");
-    } finally {
-      // response.end();
     }
   } else {
     response.send("Please enter Username and Password!");
-    response.end();
   }
 });
 
-// http://localhost:3000/auth Log user in
+// http://localhost:3000/register Register new user
 app.post("/register", async function (request, response) {
   // Capture the input fields
   let username = request.body.username;
@@ -141,12 +140,18 @@ app.post("/register", async function (request, response) {
   // Ensure the input fields exists and are not empty
   if (username && password) {
     // Execute SQL query that'll select the account from the database based on the specified username and password
-    var results = await addUser(username, password);
+    var results = await addUser(username, password, spendings, savings);
     // If the account exists
     if (results) {
       // Authenticate the user
       spendings = 0;
       savings = 0;
+      request.session.user = {
+        username: request.body.username,
+        password: request.body.password,
+        spendings: spendings,
+        savings: savings,
+      };
       // Redirect to home page
       response.redirect("/");
     } else {

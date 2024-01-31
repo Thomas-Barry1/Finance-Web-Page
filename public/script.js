@@ -1,5 +1,6 @@
 var spendings = 0;
 var savings = 0;
+var username = undefined;
 
 // Fetch data from the server
 async function fetchData() {
@@ -8,7 +9,20 @@ async function fetchData() {
     const data = await response.json();
     spendings = data.spendings;
     savings = data.savings;
+    username = data.username;
 
+    if (username != undefined) {
+      console.log("Inside if statement");
+      var element = document.querySelectorAll(".invisible");
+      console.log(element);
+      document.getElementById("loginName").innerHTML = "Hello " + username;
+      document.getElementById("saveBtn").classList.remove("invisible");
+    }
+
+    console.log("Inside script");
+    console.log("Spendings " + spendings);
+    console.log("Savings " + savings);
+    console.log("Username " + username);
     // Update the HTML with the retrieved variables
     // document.getElementById(
     //   "variable1"
@@ -23,6 +37,21 @@ async function fetchData() {
 
 // Call the fetchData function when the page loads
 window.onload = fetchData;
+
+document.getElementById("saveBtn").addEventListener("click", function (e) {
+  // Prevent the default form submission behavior
+  e.preventDefault();
+  let data = { spendings: "" + window.spendings, savings: "" + window.savings };
+
+  console.log("Save btn worked");
+  fetch("/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }).then((res) => {
+    console.log("Request complete! response:", res);
+  });
+});
 
 //TODO: Switch to get spendings and savings data from server
 document
