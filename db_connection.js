@@ -81,17 +81,15 @@ export async function findUser(username, password) {
 }
 
 export async function updateUserValues(username, password, spendings, savings) {
-  con.connect(function (err) {
-    if (err) throw err;
-    var sql =
-      "UPDATE users SET spendings = ? AND savings = ? WHERE username = ? AND password = ?";
-    con.query(
-      sql,
-      [username, password, spendings, savings],
-      function (err, result) {
-        if (err) throw err;
-        console.log(result.affectedRows + " record(s) updated");
-      }
-    );
-  });
+  console.log("spendings" + spendings);
+  var sql =
+    "UPDATE users SET spendings = ?, savings = ? WHERE username = ? AND password = ?";
+  const [rows] = await pool.query(
+    sql,
+    [parseFloat(spendings), parseFloat(savings), username + "", password + ""],
+    function (err, result) {
+      if (err) throw err;
+      console.log(result.affectedRows + " record(s) updated");
+    }
+  );
 }

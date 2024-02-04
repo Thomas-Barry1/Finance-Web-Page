@@ -1,7 +1,59 @@
 var spendings = 0;
 var savings = 0;
+var username = undefined;
 
-//TODO: Switch to get spendings and savings from server
+// Fetch data from the server
+async function fetchData() {
+  try {
+    const response = await fetch("/getData");
+    const data = await response.json();
+    spendings = data.spendings;
+    savings = data.savings;
+    username = data.username;
+
+    if (username != undefined) {
+      console.log("Inside if statement");
+      var element = document.querySelectorAll(".invisible");
+      console.log(element);
+      document.getElementById("loginName").innerHTML = "Hello " + username;
+      document.getElementById("saveBtn").classList.remove("invisible");
+    }
+
+    console.log("Inside script");
+    console.log("Spendings " + spendings);
+    console.log("Savings " + savings);
+    console.log("Username " + username);
+    // Update the HTML with the retrieved variables
+    // document.getElementById(
+    //   "variable1"
+    // ).innerText = `Variable 1: ${data.variable1}`;
+    // document.getElementById(
+    //   "variable2"
+    // ).innerText = `Variable 2: ${data.variable2}`;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  }
+}
+
+// Call the fetchData function when the page loads
+window.onload = fetchData;
+
+document.getElementById("saveBtn").addEventListener("click", function (e) {
+  // Prevent the default form submission behavior
+  e.preventDefault();
+  let data = { spendings: "" + window.spendings, savings: "" + window.savings };
+
+  console.log("Save btn worked");
+  fetch("/submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(data),
+  }).then((res) => {
+    console.log("Request complete! response:", res);
+  });
+});
+
+//TODO: Switch to get spendings and savings data from server
 document
   .getElementById("calculatorForm")
   .addEventListener("submit", function (e) {
