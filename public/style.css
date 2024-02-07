@@ -6,6 +6,10 @@ body {
     padding: 0;
     background-color: #f7f7f7;
   }
+
+  .invisible{
+    display: none;
+  }
   
 /* Navigation Menu */
 .menu {
@@ -99,7 +103,7 @@ ol, ul {
     border-radius: 4px;
   }
   
-  button[type="submit"] {
+  button {
     display: block;
     width: 100%;
     padding: 10px;
@@ -110,7 +114,7 @@ ol, ul {
     cursor: pointer;
   }
   
-  button[type="submit"]:hover {
+  button:hover {
     background-color: #0056b3;
   }
   
@@ -121,6 +125,7 @@ ol, ul {
     border-radius: 4px;
     background-color: #f9f9f9;
   }
+
 
   @media screen and (max-width: 768px) {
     .container {

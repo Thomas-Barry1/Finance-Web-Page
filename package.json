@@ -2,14 +2,19 @@
   "name": "financesweb",
   "version": "0.0.1",
   "description": "A web tool for tracking finances and available spending and saving money.",
-  "main": "script.js",
+  "main": "server.js",
+  "type": "module",
   "scripts": {
+    "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Thomas-Barry1",
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "dotenv": "^16.4.1",
     "express": "^4.18.2",
-    "express-validator": "^7.0.1"
+    "express-session": "^1.17.3",
+    "express-validator": "^7.0.1",
+    "mysql2": "^3.6.5"
   }
 }
