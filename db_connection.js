@@ -1,6 +1,6 @@
 import mysql from "mysql2";
 // Config dotnev
-require("dotenv").config();
+import "dotenv/config";
 
 // var con = mysql.createConnection({
 //   host: "127.0.0.1",
