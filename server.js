@@ -66,11 +66,19 @@ app.get("/savings-goal-planner", (req, res) => {
 app.get("/getData", (req, res) => {
   // Simulating data retrieval from a database or another source
 
-  res.json({
-    spendings: req.session.user.spendings,
-    savings: req.session.user.savings,
-    username: req.session.user.username,
-  });
+  if (req.session.user) {
+    res.json({
+      spendings: req.session.user.spendings,
+      savings: req.session.user.savings,
+      username: req.session.user.username,
+    });
+  } else {
+    res.json({
+      spendings: 0,
+      savings: 0,
+      username: undefined,
+    });
+  }
 });
 
 app.use(express.json()); // to support JSON-encoded bodies
